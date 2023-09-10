@@ -16,8 +16,14 @@ jobs:
       - name: Count Requests
         id: request_count
         run: |
-          request_count=$(curl -s https://kingattackerror404.github.io/killua.official/ | grep -o 'Requested: [0-9]*' | grep -o '[0-9]*')
-          echo "::set-output name=request_count::$request_count"
+          response=$(curl -s https://kingattackerror404.github.io/killua.official/)
+          if [ $? -eq 0 ]; then
+            request_count=$(echo "$response" | grep -o 'Requested: [0-9]*' | grep -o '[0-9]*')
+            echo "::set-output name=request_count::$request_count"
+          else
+            echo "Error: Failed to retrieve the website content using curl."
+            exit 1
+          fi
 
       - name: Check Request Count
         run: |

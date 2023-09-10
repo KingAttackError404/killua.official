@@ -1,0 +1,41 @@
+name: Auto Response to High Request Count
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  auto-response:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Count Requests
+        id: request_count
+        run: |
+          request_count=$(curl -s https://kingattackerror404.github.io/killua.official/ | grep -o 'Requested: [0-9]*' | grep -o '[0-9]*')
+          echo "::set-output name=request_count::$request_count"
+
+      - name: Check Request Count
+        run: |
+          request_count="${{ steps.request_count.outputs.request_count }}"
+          if [ "$request_count" -ge 100 ]; then
+            echo "Request count is high ($request_count). Activating response."
+            cp 502.html index.html
+          else
+            echo "Request count is within limits ($request_count). No response needed."
+          fi
+        shell: bash
+
+      - name: Commit Changes
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git commit -am "Auto-response to high request count"
+          git push
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          

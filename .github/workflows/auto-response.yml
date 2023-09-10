@@ -16,14 +16,8 @@ jobs:
       - name: Count Requests
         id: request_count
         run: |
-          response=$(curl -s https://kingattackerror404.github.io/killua.official/index.html)
-          if [ $? -eq 0 ]; then
-            request_count=$(echo "$response" | grep -o 'Requested: [0-9]*' | grep -o '[0-9]*')
-            echo "::set-output name=request_count::$request_count"
-          else
-            echo "Error: Failed to retrieve the website content using curl."
-            exit 1
-          fi
+          request_count=$(curl -s https://kingattackerror404.github.io/killua.official/ | grep -o 'Requested: [0-9]*' | grep -o '[0-9]*')
+          echo "::set-output name=request_count::$request_count"
 
       - name: Check Request Count
         run: |
@@ -31,17 +25,12 @@ jobs:
           if [ "$request_count" -ge 100 ]; then
             echo "Request count is high ($request_count). Activating response."
             cp 502.html index.html
+            git config user.name "GitHub Actions"
+            git config user.email "actions@github.com"
+            git commit -am "Auto-response to high request count"
+            git push
           else
             echo "Request count is within limits ($request_count). No response needed."
           fi
         shell: bash
 
-      - name: Commit Changes
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          git commit -am "Auto-response to high request count"
-          git push
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          

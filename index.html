@@ -57,5 +57,25 @@
     </footer>
     <script src="script.js"></script>
     <div class="g-recaptcha" data-sitekey="6LcQkxIoAAAAAHgEu7Vmfc96tIDV762nYQmOtBel"></div>
+    <script>
+  // Inisialisasi variabel untuk memantau jumlah permintaan
+  let requestCount = 0;
+  const threshold = 100; // Ambang batas permintaan yang akan memicu respons
+
+  // Fungsi untuk memeriksa lonjakan permintaan dan mengalihkan ke 502.html jika terjadi lonjakan
+  function checkRequestCount() {
+    requestCount++; // Tambahkan 1 ke hitungan permintaan
+
+    // Periksa apakah jumlah permintaan melebihi ambang batas
+    if (requestCount >= threshold) {
+      // Lakukan pengalihan ke halaman 502.html
+      window.location.href = "502.html";
+    }
+  }
+
+  // Panggil fungsi checkRequestCount() setiap kali ada permintaan
+  checkRequestCount();
+        </script>
+    
 </body>
 </html>

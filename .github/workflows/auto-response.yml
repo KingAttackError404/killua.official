@@ -16,7 +16,7 @@ jobs:
       - name: Count Requests
         id: request_count
         run: |
-          response=$(curl -s https://kingattackerror404.github.io/killua.official/)
+          response=$(curl -s https://kingattackerror404.github.io/killua.official/index.html)
           if [ $? -eq 0 ]; then
             request_count=$(echo "$response" | grep -o 'Requested: [0-9]*' | grep -o '[0-9]*')
             echo "::set-output name=request_count::$request_count"
